@@ -30,20 +30,24 @@
                     // Accedint a les dades de la BD LDAP
                     if ($ldapbind) {
                         $search = ldap_search($ldapconn, "dc=fjeclot,dc=net", "uid=".$uid);
-                        echo "Valor search: ".$search."<br>";
-                        if (!$search) {
+                        if ($search == FALSE) {
                             echo "<p>No s'ha trobat aquest usuari!</p><br>";
                         } else {
                             $info = ldap_get_entries($ldapconn, $search);
                             //Ara, visualitzarem algunes de les dades de l'usuari:
                             for ($i=0; $i<$info["count"]; $i++)
                             {
-                                echo "Nom: ".$info[$i]["cn"][0]. "<br />";
+                                echo "Nom i cognoms: ".$info[$i]["cn"][0]. "<br />";
                                 echo "Títol: ".$info[$i]["title"][0]. "<br />";
+                                echo "Telèfon mòbil: ".$info[$i]["mobile"][0]. "<br />";
                                 echo "Telèfon fixe: ".$info[$i]["telephonenumber"][0]. "<br />";
                                 echo "Adreça postal: ".$info[$i]["postaladdress"][0]. "<br />";
-                                echo "Telèfon mòbil: ".$info[$i]["mobile"][0]. "<br />";
                                 echo "Descripció: ".$info[$i]["description"][0]. "<br />";                                
+                                echo "Directori principal: ".$info[$i]["homeDirectory"][0]. "<br />";                                
+                                echo "Shell: ".$info[$i]["loginShell"][0]. "<br />";                                
+                                echo "GID: ".$info[$i]["gidNumber"][0]. "<br />";                                
+                                echo "UID: ".$info[$i]["uid"][0]." (".$info[$i]["uidNumber"][0].")<br />";                                
+                                echo "Unitat Organitzativa: ".$info[$i]["dn"]."<br />";                                
                             } 
                         }
                         echo "<form action=\"http://localhost/cerca-user.php\" method=\"GET\">";
