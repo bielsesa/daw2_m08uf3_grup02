@@ -20,7 +20,7 @@
             session_start();
             echo "<p>Autenticació correcta. Redirecció en 5 segons...</p>";
             sleep(5);
-            header("Location: http://localhost/menu.html");
+            header("Location: http://localhost/menu.php");
             $_SESSION["admin"] = "true";
             $_SESSION["id"] = $ldapadmin;
             $_SESSION["pwd"] = $ldappass;
