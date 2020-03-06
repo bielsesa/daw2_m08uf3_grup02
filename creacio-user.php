@@ -32,8 +32,13 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
                 echo "Bind";
                 
                 // Preparació de les dades
+                $info["objectClass"][0] = "top";
+                $info["objectClass"][1] = "person";
+                $info["objectClass"][2] = "organizationalPerson";
+                $info["objectClass"][3] = "inetOrgPerson";
+                $info["objectClass"][4] = "posixAccount";
+                $info["objectClass"][5] = "shadowAccount";
                 $info["uid"] = $_POST["uid"];
-                $info["ou"] = $_POST["ou"];
                 $info["cn"] = $_POST["nom"]." ".$_POST["cognom"];
                 $info["givenName"] = $_POST["nom"];
                 $info["sn"] = $_POST["cognom"];
@@ -47,14 +52,8 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
                 $info["homeDirectory"] = $_POST["homeDirectory"];
                 $info["description"] = $_POST["desc"];
                 // $info["userPassword"] = $_POST["pwd"]; potser necessita cript i encoding
-                $info["objectClass"] = "top";
-                $info["objectClass"] = "person";
-                $info["objectClass"] = "organizationalPerson";
-                $info["objectClass"] = "inetOrgPerson";
-                $info["objectClass"] = "posixAccount";
-                $info["objectClass"] = "shadowAccount";
 
-                $dn = "uid=".$info[uid].",ou=".$info["ou"].",dc=fjeclot,dc=net";
+                $dn = "uid=".$_POST["uid"].",ou=".$_POST["ou"].",dc=fjeclot,dc=net";
 
                 echo "[DEBUG]<br>User info:<br>";
                 var_dump($info);
@@ -69,8 +68,10 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
                 ErrCode: $errcode<br>
                 Matched dn: $matcheddn<br>
                 ErrMsg: $errmsg<br>
-                Referral: $ref<br><br>
+                Referral: <br>
                 RES;
+                var_dump($ref);
+                echo "<br><br>";
 
                 if ($ldapadd) {
                     echo <<<OUT
