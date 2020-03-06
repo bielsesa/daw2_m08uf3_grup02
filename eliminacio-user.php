@@ -25,35 +25,34 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 
             // Connexió LDAP
             $ldapconn = ldap_connect("localhost") or die("No s'ha pogut establir una connexió amb el servidor openLDAP.");
+            ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
 
             if ($ldapconn) {
                 $ldapbind = ldap_bind($ldapconn, $ldapadmin, $ldappass);
 
-                $usuari = "cn=".$info["nom"]." ".$info["cognom"].",ou=".$info["ou"].",dc=fjeclot,dc=net";
+                $dn = "uid=".$_GET["uid"].",ou=".$_GET["ou"].",dc=fjeclot,dc=net";
+
+                echo "dn: ".$dn."<br>";
 
                 // Eliminació de l'usuari LDAP
-                $res = ldap_add($ldapconn, $usuari);
+                $ldapdel = ldap_delete_ext($ldapconn, $dn);
+                $ldapparse = ldap_parse_result($ldapconn, $ldapdel, $errcode, $matcheddn, $errmsg, $ref);
 
-                if ($res) {
-                    echo <<<OUT
-                    S'ha eliminat correctament l'usuari.<br>
-                    <a href="http://localhost/crea-user.php">Tornar enrere.</a>
-                    OUT;
+                if ($errcode == 0) {
+                    echo "S'ha eliminat correctament l'usuari.<br>";
                 } else {
                     echo <<<OUT
-                    Hi ha hagut un error a l'hora d'eliminar aquest usuari.<br/>
+                    Hi ha hagut un error a l'hora d'eliminar aquest usuari. Codi d'error: $errcode.<br/>
                     Contacta amb l'administrador.<br>
-                    <a href="http://localhost/crea-user.php">Tornar enrere.</a>
                     OUT;
                 }
 
                 ldap_close($ldapconn);
             } else {
-                echo <<<OUT
-                Error durant la connexió al servidor LDAP.<br/>
-                <a href="http://localhost/crea-user.php">Tornar enrere.</a>
-                OUT;
+                echo "Error durant la connexió al servidor LDAP.<br/>";
             }
+            
+            echo '<a href="http://localhost/elimina-user.php">Tornar enrere.</a>';
         }
     }
 ?>

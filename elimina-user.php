@@ -21,9 +21,10 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
             echo <<<BODY
             <form action="eliminacio-user.php" METHOD="GET">
                 <label>Identificador de l'usuari: <input type="text" name="uid"></label><br/>                
+                <label>Unitt organitzativa: <input type="text" name="ou"></label><br/>                
                 <input type="submit" value="Eliminar usuari"/>
             </form>
-            <a href="http://localhost/menu.php">Tornar al menú</a>"
+            <a href="http://localhost/menu.php">Tornar al menú</a>
             BODY;
         }
     }

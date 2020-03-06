@@ -25,10 +25,8 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
             // Connexió LDAP
             $ldapconn = ldap_connect("localhost") or die("No s'ha pogut establir una connexió amb el servidor openLDAP.");
             ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
-            echo "Connexió";
 
             if ($ldapconn) {                
-                $ldapbind = ldap_bind($ldapconn, $ldapadmin, $ldappass);
                 echo "Bind";
                 
                 // Preparació de les dades
@@ -55,44 +53,25 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 
                 $dn = "uid=".$_POST["uid"].",ou=".$_POST["ou"].",dc=fjeclot,dc=net";
 
-                echo "[DEBUG]<br>User info:<br>";
-                var_dump($info);
-                echo "<br>User dn: $dn<br><br>";
-
                 // Creació de l'usuari LDAP
                 $ldapadd = ldap_add_ext($ldapconn, $dn, $info);
+                // Extract information from result
                 $ldapparse = ldap_parse_result($ldapconn, $ldapadd, $errcode, $matcheddn, $errmsg, $ref);
 
-                echo "Resultat ldapadd<br>";
-                echo <<<RES
-                ErrCode: $errcode<br>
-                Matched dn: $matcheddn<br>
-                ErrMsg: $errmsg<br>
-                Referral: <br>
-                RES;
-                var_dump($ref);
-                echo "<br><br>";
-
-                if ($ldapadd) {
-                    echo <<<OUT
-                    S'ha afegit correctament l'usuari.<br>
-                    <a href="http://localhost/crea-user.php">Tornar enrere.</a>
-                    OUT;
+                if ($errcode == 0) {
+                    echo "S'ha afegit correctament l'usuari.<br>";
                 } else {
                     echo <<<OUT
-                    Hi ha hagut un error a l'hora d'afegir aquest usuari.<br/>
+                    Hi ha hagut un error a l'hora d'afegir aquest usuari. Codi d'error: $errcode.<br/>
                     Contacta amb l'administrador.<br>
-                    <a href="http://localhost/crea-user.php">Tornar enrere.</a>
                     OUT;
                 }
 
                 ldap_close($ldapconn);
             } else {
-                echo <<<OUT
-                Error durant la connexió al servidor LDAP.<br/>
-                <a href="http://localhost/crea-user.php">Tornar enrere.</a>
-                OUT;
+                echo "Error durant la connexió al servidor LDAP.<br/>";
             }
+                echo '<a href="http://localhost/crea-user.php">Tornar enrere.</a>';
         }
     }
 ?>
