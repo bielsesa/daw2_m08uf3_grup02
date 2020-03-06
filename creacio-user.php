@@ -24,36 +24,55 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 
             // Connexió LDAP
             $ldapconn = ldap_connect("localhost") or die("No s'ha pogut establir una connexió amb el servidor openLDAP.");
+            ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+            echo "Connexió";
 
-            if ($ldapconn) {
+            if ($ldapconn) {                
                 $ldapbind = ldap_bind($ldapconn, $ldapadmin, $ldappass);
+                echo "Bind";
                 
                 // Preparació de les dades
                 $info["uid"] = $_POST["uid"];
                 $info["ou"] = $_POST["ou"];
-                $info["nom"] = $_POST["nom"];
-                $info["cognom"] = $_POST["cognom"];
-                $info["titol"] = $_POST["titol"];
-                $info["telFix"] = $_POST["telFix"];
-                $info["telMob"] = $_POST["telMob"];
-                $info["adrPostal"] = $_POST["adrPostal"];
+                $info["cn"] = $_POST["nom"]." ".$_POST["cognom"];
+                $info["givenName"] = $_POST["nom"];
+                $info["sn"] = $_POST["cognom"];
+                $info["title"] = $_POST["titol"];
+                $info["telephoneNumber"] = $_POST["telFix"];
+                $info["mobile"] = $_POST["telMob"];
+                $info["postalAddress"] = $_POST["adrPostal"];
                 $info["loginShell"] = $_POST["loginShell"];
                 $info["gidNumber"] = $_POST["gidNumber"];
                 $info["uidNumber"] = $_POST["uidNumber"];
                 $info["homeDirectory"] = $_POST["homeDirectory"];
-                $info["desc"] = $_POST["desc"];
-                // $info["pwd"] = $_POST["pwd"];
+                $info["description"] = $_POST["desc"];
+                // $info["userPassword"] = $_POST["pwd"]; potser necessita cript i encoding
+                $info["objectClass"] = "top";
+                $info["objectClass"] = "person";
+                $info["objectClass"] = "organizationalPerson";
+                $info["objectClass"] = "inetOrgPerson";
+                $info["objectClass"] = "posixAccount";
+                $info["objectClass"] = "shadowAccount";
 
-                $usuari = "cn=".$info["nom"]." ".$info["cognom"].",ou=".$info["ou"].",dc=fjeclot,dc=net";
+                $dn = "uid=".$info[uid].",ou=".$info["ou"].",dc=fjeclot,dc=net";
 
                 echo "[DEBUG]<br>User info:<br>";
                 var_dump($info);
-                echo "<br>User dn: $usuari<br><br>";
+                echo "<br>User dn: $dn<br><br>";
 
                 // Creació de l'usuari LDAP
-                $res = ldap_add($ldapconn, $usuari, $info);
+                $ldapadd = ldap_add_ext($ldapconn, $dn, $info);
+                $ldapparse = ldap_parse_result($ldapconn, $ldapadd, $errcode, $matcheddn, $errmsg, $ref);
 
-                if ($res) {
+                echo "Resultat ldapadd<br>";
+                echo <<<RES
+                ErrCode: $errcode<br>
+                Matched dn: $matcheddn<br>
+                ErrMsg: $errmsg<br>
+                Referral: $ref<br><br>
+                RES;
+
+                if ($ldapadd) {
                     echo <<<OUT
                     S'ha afegit correctament l'usuari.<br>
                     <a href="http://localhost/crea-user.php">Tornar enrere.</a>

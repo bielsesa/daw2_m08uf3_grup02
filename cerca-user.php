@@ -3,9 +3,7 @@
         if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != "true") {
             echo "No has iniciat sessió com a administrador.";
             echo "Torna a la <a href=\"http://localhost/index.html\">pàgina inicial</a> i fes login.";
-        } else {            
-            
-
+        } else {
             // si s'ha guardat el nom d'usuari
             // cercar-lo, si no, mostrar form
             if (isset($_GET["uid"])) {
@@ -67,6 +65,8 @@
                 echo "<input type=\"submit\" value=\"Cerca\"/>";
                 echo "</form>";
             }
+                
+            echo '<a href="http://localhost/menu.php">Tornar al menú</a>'; 
         }
     }
 ?>

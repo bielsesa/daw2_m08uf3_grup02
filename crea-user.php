@@ -36,7 +36,7 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
                 
                 <input type="submit" value="Crear usuari"/>
             </form>
-            <a href="http://localhost/menu.php">Tornar al menú</a>"
+            <a href="http://localhost/menu.php">Tornar al menú</a>
             BODY;
             // <label>Contrasenya de l'usuari: <input type="text" name="pwd"></label><br/>
         }
