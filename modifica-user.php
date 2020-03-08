@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title>Eliminació de l'usuari LDAP</title>
+<title>Modificar usuari LDAP</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
 integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" 
@@ -13,23 +13,23 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 </head>
 <body>
 <?php
-    include "ldaphelper.php";
     if (session_start()) {
         if (!isset($_SESSION["ldap"])) {
             echo "No has iniciat sessió com a administrador.<br/>";
             echo "Torna a la <a href=\"http://localhost/index.html\">pàgina inicial</a> i fes login.";
         } else {
-            $ldap = new LdapHelper($_SESSION["host"], $_SESSION["uid"], $_SESSION["pwd"], $_SESSION["dc"]);
-
-            if ($ldap->ldapconn && $ldap->ldapbind) {
-                $dn = "uid=".$_GET["uid"].",ou=".$_GET["ou"].",dc=fjeclot,dc=net";
-                echo $ldap->EliminaUsuari($dn);
-            } else {
-                echo "Error durant la connexió al servidor LDAP.<br/>";
-            }
-            
-            echo '<a href="http://localhost/elimina-user.php"><button class="btn btn-dark">Tornar enrere</button></a>';
-            echo '<a href="http://localhost/menu.php"><button class="btn btn-dark">Tornar al menú</button></a>';
+            echo <<<BODY
+            <form action="modificacio-user.php" METHOD="GET">
+                <label>Identificador de l'usuari: <input type="text" name="uid"></label><br/>
+                <label>Unitat organitzativa: <input type="text" name="ou"></label><br/>                
+                <p>A continuació pots escollir què modificar. Si no vols modificar alguna<br/>
+                de les següents dades, deixa-la en blanc.</p>                
+                <label>Nou número UID: <input type="text" name="uidnum"></label><br/>                
+                <label>Nou número GID: <input type="text" name="gidnum"></label><br/>                
+                <input type="submit" class="btn btn-dark" value="Modifica usuari"/>
+            </form>
+            <a href="http://localhost/menu.php"><button class="btn btn-dark">Tornar al menú</button></a>
+            BODY;
         }
     }
 ?>

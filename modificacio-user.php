@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title>Eliminació de l'usuari LDAP</title>
+<title>Modificació usuari LDAP</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
 integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" 
@@ -23,7 +23,13 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 
             if ($ldap->ldapconn && $ldap->ldapbind) {
                 $dn = "uid=".$_GET["uid"].",ou=".$_GET["ou"].",dc=fjeclot,dc=net";
-                echo $ldap->EliminaUsuari($dn);
+                if (isset($_GET["uidnum"]) && $_GET["uidnum"] != "") {
+                    $dades["uidNumber"] = $_GET["uidnum"];
+                }
+                if (isset($_GET["gidnum"]) && $_GET["gidnum"] != "") {
+                    $dades["gidNumber"] = $_GET["gidnum"];
+                }
+                echo $ldap->ModificaUsuari($dn, $dades);
             } else {
                 echo "Error durant la connexió al servidor LDAP.<br/>";
             }

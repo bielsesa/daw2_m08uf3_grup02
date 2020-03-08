@@ -14,17 +14,17 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 <body>
 <?php
     if (session_start()) {
-        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != "true") {
+        if (!isset($_SESSION["ldap"])) {
             echo "No has iniciat sessió com a administrador.<br/>";
             echo "Torna a la <a href=\"http://localhost/index.html\">pàgina inicial</a> i fes login.";
         } else {
             echo <<<BODY
             <form action="eliminacio-user.php" METHOD="GET">
                 <label>Identificador de l'usuari: <input type="text" name="uid"></label><br/>                
-                <label>Unitt organitzativa: <input type="text" name="ou"></label><br/>                
-                <input type="submit" value="Eliminar usuari"/>
+                <label>Unitat organitzativa: <input type="text" name="ou"></label><br/>                
+                <input type="submit" class="btn btn-dark" value="Eliminar usuari"/>
             </form>
-            <a href="http://localhost/menu.php">Tornar al menú</a>
+            <a href="http://localhost/menu.php"><button class="btn btn-dark">Tornar al menú</button></a>
             BODY;
         }
     }

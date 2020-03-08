@@ -13,21 +13,26 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 </head>
 <body>
   <?php
-    if (session_start()) {
-      if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != "true") {
-          echo "No has iniciat sessió com a administrador.<br/>";
-          echo "Torna a la <a href=\"http://localhost/index.html\">pàgina inicial</a> i fes login.";
-      } else {
-          echo "<form action=\"crea-user.php\" METHOD=\"GET\">
-                  <input type=\"submit\" value=\"Crear usuari\">
-              </form>
-              <form action=\"elimina-user.php\" METHOD=\"GET\">
-                  <input type=\"submit\" value=\"Eliminar usuari\">
-              </form>
-              <form action=\"cerca-user.php\" METHOD=\"GET\">
-                  <input type=\"submit\" value=\"Cercar usuari\">
-              </form>";
-      }
+      include "ldaphelper.php";
+      if (session_start()) {
+        if (!isset($_SESSION["ldap"])) {
+          echo <<<OUT
+          <p>No has iniciat sessió com a administrador.<br/>
+          Torna a la <a href="index.html">pàgina inicial</a> i fes login.</p>
+          OUT;
+        } else {
+          // var_dump($_SESSION["ldap"]);
+          $ldap = new LdapHelper($_SESSION["host"], $_SESSION["uid"], $_SESSION["pwd"], $_SESSION["dc"]);
+
+          if ($ldap->ldapconn && $ldap->ldapbind) {
+            echo <<<OUT
+            <a href="crea-user.php"><button class="btn btn-dark">Crear usuari</button></a>
+            <a href="elimina-user.php"><button class="btn btn-dark">Eliminar usuari</button></a>
+            <a href="modifica-user.php"><button class="btn btn-dark">Modifica usuari</button></a>
+            <a href="cerca-user.php"><button class="btn btn-dark">Cercar usuari</button></a>
+            OUT;
+          }
+        }
     }
   ?>    
   </body>

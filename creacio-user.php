@@ -13,21 +13,15 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 </head>
 <body>
 <?php
+    include "ldaphelper.php";
     if (session_start()) {
-        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != "true") {
+        if (!isset($_SESSION["ldap"])) {
             echo "No has iniciat sessió com a administrador.<br/>";
             echo "Torna a la <a href=\"http://localhost/index.html\">pàgina inicial</a> i fes login.";
         } else {
-            $ldaphost = "ldap://localhost";
-            $ldappass = $_SESSION["pwd"];
-            $ldapadmin = $_SESSION["id"];
+            $ldap = new LdapHelper($_SESSION["host"], $_SESSION["uid"], $_SESSION["pwd"], $_SESSION["dc"]);
 
-            // Connexió LDAP
-            $ldapconn = ldap_connect("localhost") or die("No s'ha pogut establir una connexió amb el servidor openLDAP.");
-            ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
-
-            if ($ldapconn) {                
-                echo "Bind";
+            if ($ldap->ldapconn && $ldap->ldapbind) {
                 
                 // Preparació de les dades
                 $info["objectClass"][0] = "top";
@@ -53,26 +47,13 @@ integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifw
 
                 $dn = "uid=".$_POST["uid"].",ou=".$_POST["ou"].",dc=fjeclot,dc=net";
 
-                // Creació de l'usuari LDAP
-                $ldapadd = ldap_add_ext($ldapconn, $dn, $info);
-                // Extract information from result
-                $ldapparse = ldap_parse_result($ldapconn, $ldapadd, $errcode, $matcheddn, $errmsg, $ref);
-
-                if ($errcode == 0) {
-                    echo "S'ha afegit correctament l'usuari.<br>";
-                } else {
-                    echo <<<OUT
-                    Hi ha hagut un error a l'hora d'afegir aquest usuari. Codi d'error: $errcode.<br/>
-                    Contacta amb l'administrador.<br>
-                    OUT;
-                }
-
-                ldap_close($ldapconn);
+                echo $ldap->CreaUsuari($dn, $info); 
             } else {
                 echo "Error durant la connexió al servidor LDAP.<br/>";
             }
-                echo '<a href="http://localhost/crea-user.php">Tornar enrere.</a>';
-        }
+                echo '<a href="http://localhost/crea-user.php"><button class=\"btn btn-dark\">Tornar enrere</button>></a>';
+                echo '<a href="http://localhost/menu.php"><button class="btn btn-dark">Tornar al menú</button></a>';
+            }
     }
 ?>
 </body>
